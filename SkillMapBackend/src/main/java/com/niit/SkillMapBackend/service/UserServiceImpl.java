@@ -14,9 +14,9 @@ public class UserServiceImpl implements UserService{
 	@Autowired
 	UserDao userDAO;
 	@Override
-	public boolean isEmailUnique(int eid)
+	public boolean isEmailUnique(String email)
 	{
-		return userDAO.isEmailUnique(eid);
+		return userDAO.isEmailUnique(email);
 	}
 	
 	@Override

@@ -6,7 +6,7 @@ import com.niit.SkillMapBackend.model.UserDetail;
 
 @Repository("userDAO")
 public interface UserDao {
-	public boolean isEmailUnique(int eid);
+	public boolean isEmailUnique(String email);
 	public boolean registerCustomer(UserDetail u) ;
 	UserDetail getUser(int eid);
 	boolean updateUser(UserDetail u);

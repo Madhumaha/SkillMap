@@ -9,17 +9,18 @@ import javax.persistence.Id;
 public class UserDetail {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	int Empid;
+	int empid;
 	String name; 
 	String phoneno;
 	String emailid;  
 	String address;  
-	String Skill;
+	String skill;
+	
 	public int getEmpid() {
-		return Empid;
+		return empid;
 	}
 	public void setEmpid(int empid) {
-		Empid = empid;
+		this.empid = empid;
 	}
 	public String getName() {
 		return name;
@@ -46,11 +47,12 @@ public class UserDetail {
 		this.address = address;
 	}
 	public String getSkill() {
-		return Skill;
+		return skill;
 	}
 	public void setSkill(String skill) {
-		Skill = skill;
+		this.skill = skill;
 	}
+	
 	
 	
 }

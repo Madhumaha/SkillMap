@@ -1,5 +1,7 @@
 package com.niit.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
 import org.hibernate.SessionFactory;
@@ -17,6 +19,7 @@ import com.niit.SkillMapBackend.model.UserDetail;
 import com.niit.SkillMapBackend.service.UserService;
 
 @RestController
+
 public class UserController {
 	@Autowired
 	private UserService userService;
@@ -27,26 +30,22 @@ public class UserController {
 		System.out.println("UserController bean is created");
 	}
 
-	@RequestMapping("/hello")
+	@RequestMapping("/")
 	public String message() {
 
-		return "Hello ";
+		return "Server is running ";
 	}
 
 	@RequestMapping(value = "/registerUser", method = RequestMethod.POST)
 	public ResponseEntity<?> registerUser(@RequestBody UserDetail user) {
 
-		System.out.println("registerUser in UserController" + user);// call
-																	// toString
-																	// method in
-																	// User
-																	// class
-		if (!userService.isEmailUnique(user.getEmpid())) {
+		System.out.println("registerUser in UserController" + user.getSkill());
+		if (!userService.isEmailUnique(user.getEmailid())) {
 			ErrorClass error = new ErrorClass(1, "Email already exists...please enter different email");
 			return new ResponseEntity<ErrorClass>(error, HttpStatus.CONFLICT);
 		}
 		try {
-			userService.registerCustomer(user);// insert
+			userService.registerCustomer(user);
 		} catch (Exception e) {
 			ErrorClass error = new ErrorClass(2, "some required fields are empty..." + e.getMessage());
 			return new ResponseEntity<ErrorClass>(error, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -97,16 +96,36 @@ public class UserController {
 			return new ResponseEntity<ErrorClass>(error, HttpStatus.UNAUTHORIZED);
 		}
 		UserDetail user = userService.getUser(eid);
-		/*
-		 * user.setOnline(false); userDao.update(user); //update onlinestatus to
-		 * false session.removeAttribute("loginId"); session.invalidate();
-		 */
+		
 		return new ResponseEntity<UserDetail>(user, HttpStatus.OK);
 	}
 
+	@RequestMapping(value = "/allusers", method = RequestMethod.GET)
+	public ResponseEntity<?> getAllUsers(HttpSession session) {
+		
+		List<UserDetail> users = userService.listUsers();
+		return new ResponseEntity<List<UserDetail>>(users, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/deleteuser/{eid}",method=RequestMethod.DELETE)
+	 public ResponseEntity<?> deleteUser(@PathVariable("eid") int eid)
+		{
+			UserDetail user=userService.getUser(eid);
+			if (user == null) {
+				ErrorClass error = new ErrorClass(4, "User not found....");
+				return new ResponseEntity<ErrorClass>(error, HttpStatus.NOT_FOUND);
+			}
+			else
+			{
+			userService.deleteUser(eid);
+			return new ResponseEntity<UserDetail>(user, HttpStatus.OK);
+			}
+			
+		}
+	
 	@RequestMapping(value = "/updateuser", method = RequestMethod.PUT)
 	public ResponseEntity<?> updateUser(@RequestBody UserDetail user, HttpSession session) {
-		
+		System.out.println(user.getEmpid());
 		if (user.getEmpid()<=0) { // not logged in ,loginId returns null.
 			ErrorClass error = new ErrorClass(5, "Unauthorised access...");
 			return new ResponseEntity<ErrorClass>(error, HttpStatus.UNAUTHORIZED);

@@ -21,13 +21,16 @@ public class UserDaoImpl implements UserDao{
 			System.out.println("UserDaoImpl bean is created..");
 		}
 	
-	public boolean isEmailUnique(int eid) { 
+	public boolean isEmailUnique(String email) { 
 		Session session = sessionFactory.getCurrentSession();
-		UserDetail user = (UserDetail) session.get(UserDetail.class, eid);
-		if (user.getEmailid() == null)
-			return true;
-		else
+		//UserDetail user = (UserDetail) session.get(UserDetail.class, eid);
+		String s4="from UserDetail where emailid='"+email+"'";
+		Query e=sessionFactory.getCurrentSession().createQuery(s4);
+		List<UserDetail> ulist=e.list();
+		if (ulist.size()!=0)
 			return false;
+		else
+			return true;
 	}
 	
 		public boolean registerCustomer(UserDetail u) {
